@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
 
-const RoomCard = ({ imageUrl, title, price, detailsLink,roomId }) => {
+const RoomCard = ({ imageUrl, title, price, detailsLink,roomId,roomNo }) => {
   const nav = useNavigate();
   return (
     <div className="room-wrap flex flex-col lg:flex-row">
@@ -25,7 +25,7 @@ const RoomCard = ({ imageUrl, title, price, detailsLink,roomId }) => {
           <p className="pt-1">
             <a
               className=" btn-custom px-3 cursor-pointer py-2 bg-[#c59a63] text-gray rounded transition"
-              onClick={() => { nav(`/roomdetail/${roomId}`) }}
+              onClick={() => { nav(`/roomdetail/${roomNo}`) }}
             >
               View Details <span className="ml-2 ">&rarr;</span>
             </a>
@@ -40,6 +40,7 @@ const RoomsSection = () => {
   const rooms = [
     {
       roomId: 1,
+      roomNo: 101,
       imageUrl: "images/room-6.jpg",
       title: "King Room",
       price: 10000,
@@ -48,6 +49,7 @@ const RoomsSection = () => {
     },
     {
       roomId: 2,
+      roomNo: 102,
       imageUrl: "images/room-1.jpg",
       title: "Suite Room",
       price: 5000,
@@ -56,6 +58,7 @@ const RoomsSection = () => {
     },
     {
       roomId: 3,
+      roomNo: 103,
       imageUrl: "images/room-2.jpg",
       title: "Family Room",
       price: 12000,
@@ -65,6 +68,7 @@ const RoomsSection = () => {
     },
     {
       roomId: 4,
+      roomNo: 104,
       imageUrl: "images/room-3.jpg",
       title: "Deluxe Room",
       price: 8000,
@@ -74,6 +78,7 @@ const RoomsSection = () => {
     },
     {
       roomId: 5,
+      roomNo: 105,
       imageUrl: "images/room-4.jpg",
       title: "Luxury Room",
       price: 10000,
@@ -83,6 +88,7 @@ const RoomsSection = () => {
     },
     {
       roomId: 6,
+      roomNo: 106,
       imageUrl: "images/room-5.jpg",
       title: "Superior Room",
       price: 6000,
@@ -114,8 +120,8 @@ const RoomsSection = () => {
               imageUrl={room.imageUrl}
               title={room.title}
               price={room.price}
-              detailsLink={`/roomdetail/${room.roomId}`} // Generate details link
-              roomId={room.roomId}
+              detailsLink={`/roomdetail/${room.roomNo}`} // Generate details link
+              roomNo={room.roomNo}
             />
           ))}
         </div>

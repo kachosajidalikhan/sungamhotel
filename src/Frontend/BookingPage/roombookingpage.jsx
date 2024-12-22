@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 // import { useSelector } from "react-redux";
 
 const RoomBookingPage = () => {
+  const { roomNo } = useParams();
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [room, setRoom] = useState(null);
   const nav = useNavigate();
@@ -239,7 +240,7 @@ const RoomBookingPage = () => {
                     <label className="block text-sm mb-1">Room No</label>
                     <input
                       {...register("room_number", { required: true })}
-                      value='2'
+                      value={roomNo}
                       type="number"
                       className="w-full p-2 focus:outline-none rounded"
                     />

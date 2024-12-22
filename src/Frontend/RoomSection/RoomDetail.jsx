@@ -9,83 +9,89 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 const RoomDetail = () => {
-    const { roomId } = useParams();
+    const { roomNo } = useParams();
     const nav = useNavigate();
-    
+
 
     const rooms = [
         {
-          roomId: 1,
-          imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
-          title: "King Room",
-          price: 10000,
-          roomStatus: 'Available',
-          description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+            roomId: 1,
+            roomNo: 101,
+            imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
+            title: "King Room",
+            price: 10000,
+            roomStatus: 'Available',
+            description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
         },
         {
             roomId: 2,
-          imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
-          title: "Suite Room",
-          price: 5000,
-          roomStatus: 'Available',
-          description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+            roomNo: 102,
+            imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
+            title: "Suite Room",
+            price: 5000,
+            roomStatus: 'Available',
+            description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
         },
         {
             roomId: 3,
-          imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
-          title: "Family Room",
-          price: 12000,
-          roomStatus: 'Booked',
-          description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    
+            roomNo: 103,
+            imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
+            title: "Family Room",
+            price: 12000,
+            roomStatus: 'Booked',
+            description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+
         },
         {
             roomId: 4,
-          imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
-          title: "Deluxe Room",
-          price: 8000,
-          roomStatus: 'Available',
-          description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    
+            roomNo: 104,
+            imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
+            title: "Deluxe Room",
+            price: 8000,
+            roomStatus: 'Available',
+            description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+
         },
         {
             roomId: 5,
-          imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
-          title: "Luxury Room",
-          price: 10000,
-          roomStatus: 'Available',
-          description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    
+            roomNo: 105,
+            imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
+            title: "Luxury Room",
+            price: 10000,
+            roomStatus: 'Available',
+            description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+
         },
         {
             roomId: 6,
-          imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
-          title: "Superior Room",
-          price: 6000,
-          roomStatus: 'Booked',
-          description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    
+            roomNo: 106,
+            imageUrl: ["room-4.jpg", "room-5.jpg", "room-6.jpg", "room-3.jpg"],
+            title: "Superior Room",
+            price: 6000,
+            roomStatus: 'Booked',
+            description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+
         },
-      ];
+    ];
 
-      const room = rooms.find((room) => room.roomId === parseInt(roomId));
-      const images = room.imageUrl;
-      console.log(images);
-      
+    const room = rooms.find((room) => room.roomNo === parseInt(roomNo));
+    const images = room.imageUrl;
+    console.log(images);
 
-  if (!room) {
-    return <div>Room not found</div>;
-  }
+
+    if (!room) {
+        return <div>Room not found</div>;
+    }
     return (
         <div className="container mt-8 mb-4 mx-auto px-4 py-8">
             <div className="row no-gutters justify-center mb-5 pb-3">
-          <div className="col-md-7 text-center">
-            <span className="text-[#c59a63] text-sm font-medium uppercase tracking-wide">
-              Sungum Rooms
-            </span>
-            <h2 className="text-[#293941] text-3xl font-bold mt-2">Rooms Detail</h2>
-          </div>
-        </div>
+                <div className="col-md-7 text-center">
+                    <span className="text-[#c59a63] text-sm font-medium uppercase tracking-wide">
+                        Sungum Rooms
+                    </span>
+                    <h2 className="text-[#293941] text-3xl font-bold mt-2">Rooms Detail</h2>
+                </div>
+            </div>
             <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                     {/* Main Carousel */}
@@ -132,7 +138,7 @@ const RoomDetail = () => {
                     <div>
                         <h2 className="text-[#293941] text-xl font-semibold mb-2">Description</h2>
                         <p className="text-gray-600">
-                        {room.description}
+                            {room.description}
                         </p>
                     </div>
 
@@ -170,7 +176,7 @@ const RoomDetail = () => {
                             <span className="text-[#c59a63] text-2xl font-bold">PKR.{room.price}</span>
                             <span className="text-gray-600">/per night</span>
                         </div>
-                        <button onClick={()=>{nav('/room-booking-page')}} className="w-full py-2 bg-[#c59a63] text-white rounded-lg hover:bg-[#293941]">
+                        <button onClick={() => { nav(`/room-booking-page/${roomNo}`) }} className="w-full py-2 bg-[#c59a63] text-white rounded-lg hover:bg-[#293941]">
                             Book Now
                         </button>
                     </div>

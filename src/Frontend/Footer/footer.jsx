@@ -32,7 +32,7 @@ export default ()=>{
           </li>
           <li className="bg-[#c2c3c7] hover:bg-[#c59a63] rounded-full justify-center items-center flex w-10 h-10">
             <a
-              href="#"
+              href="https://www.facebook.com/share/19D8yHTRMS/"
               className="text-gray-300 hover:text-white transition duration-300"
             >
               <span className="text-[#293941] text-[20px] icon-facebook"><i class="fa-brands fa-facebook-f"></i></span>
@@ -40,7 +40,7 @@ export default ()=>{
           </li>
           <li className="bg-[#c2c3c7] hover:bg-[#c59a63] rounded-full justify-center items-center flex w-10 h-10">
             <a
-              href="#"
+              href="https://www.instagram.com/sunghamhotel/profilecard/?igsh=Zm1qdThiOTlmenk0"
               className="text-gray-300 hover:text-white transition duration-300"
             >
               <span className="text-[#293941] text-[20px] icon-instagram"><i class="fa-brands fa-instagram"></i></span>
