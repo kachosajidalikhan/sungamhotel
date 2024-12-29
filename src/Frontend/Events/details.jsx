@@ -1,13 +1,30 @@
-import React from 'react';
-import { FaCar, FaHome, FaStar,FaUser } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import { FaCar, FaHome, FaStar, FaUser } from 'react-icons/fa';
 import { IoMdCheckmark, IoIosPaper } from 'react-icons/io';
 import { MdDescription } from 'react-icons/md';
 import { FaSackDollar } from 'react-icons/fa6';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router';
+import CheckAvailability from './checkavailability';
 
-const Details = ({ event }) => {
+const Details = ({ eventDetail }) => {
     const navigate = useNavigate()
+
+    const imageArray = JSON.parse(eventDetail.images);
+    const eventId = eventDetail.eventId
+    const [isAvailable, setIsAvailable] = useState({ available: null, date: "", time: "" });
+
+    useEffect(() => {
+        if (isAvailable && isAvailable.date && isAvailable.time) {
+            eventDetail.date = isAvailable.date;
+            eventDetail.time = isAvailable.time;
+        }
+    }, [isAvailable]);
+
+    const handleAvailabilityCheck = (availability) => {
+        setIsAvailable(availability);
+    };
+
 
     const settings = {
         dots: true, // Enables dots below the carousel
@@ -28,7 +45,7 @@ const Details = ({ event }) => {
         <div className="details-main flex flex-wrap justify-between gap-3 pt-4">
             <div className="details-text w-full lg:w-1/2 space-y-6">
                 <div className="user flex gap-3 items-center">
-                    <p className=" text-lg md:text-xl font-bold text-[#c59a63]">{event.title}</p>
+                    <p className=" text-lg md:text-xl font-bold text-[#c59a63]">{eventDetail.title}</p>
                 </div>
 
                 <div className="details-info">
@@ -49,7 +66,7 @@ const Details = ({ event }) => {
                             <FaHome className="detail-icon text-[#c59a63] text-xl" />
                             <div>
                                 <h4 className="font-semibold text-[#293941]">Venue Type</h4>
-                                <p>{event.title}, Hall</p>
+                                <p>{eventDetail.title}, Hall</p>
                             </div>
                         </div>
 
@@ -89,7 +106,7 @@ const Details = ({ event }) => {
                             <MdDescription className="detail-icon text-[#c59a63] text-xl" />
                             <div>
                                 <h4 className="font-semibold text-[#293941]">Description</h4>
-                                <p>{event.description}</p>
+                                <p>{eventDetail.description}</p>
                             </div>
                         </div>
                     </div>
@@ -100,40 +117,32 @@ const Details = ({ event }) => {
             <div className="details-img lg:w-1/2 space-y-4">
                 <div className="carousel-container p-4 bg-[#c2c3c7] rounded-lg shadow-md">
                     <Slider {...settings}>
-                        <div>
-                            <img
-                                src="/images/room-4.jpg"
-                                alt="Room 4"
-                                className="w-full h-auto rounded-md shadow-md"
-                            />
-                        </div>
-                        <div>
-                            <img
-                                src="/images/room-1.jpg"
-                                alt="Room 1"
-                                className="w-full h-auto rounded-md shadow-md"
-                            />
-                        </div>
-                        <div>
-                            <img
-                                src="/images/room-2.jpg"
-                                alt="Room 2"
-                                className="w-full h-auto rounded-md shadow-md"
-                            />
-                        </div>
-                        <div>
-                            <img
-                                src="/images/room-3.jpg"
-                                alt="Room 3"
-                                className="w-full h-auto rounded-md shadow-md"
-                            />
-                        </div>
+                        {imageArray.map((image, index) => (
+                            <div key={index}>
+                                <img
+                                    src={`/${image.replace(/\\/g, "/")}`}
+                                    alt={`Event Image ${index + 1}`}
+                                    className="w-full h-auto rounded-md shadow-md"
+                                />
+                            </div>
+                        ))}
                     </Slider>
                 </div>
-                <div className="btns flex gap-4">
-                    <button onClick={()=>navigate('/contactus')} className="msgbtn bg-[#c59a63] text-white py-2 md:px-4 px-2 rounded-md shadow hover:bg-[#293941] transition">Send Message</button>
-                    <button onClick={()=>navigate('/event-booking-page')} className="bookbtn bg-[#293941] text-white py-2 md:px-4 px-2 rounded-md shadow hover:bg-[#c59a63] transition">Book Now</button>
-                </div>
+                <CheckAvailability onAvailabilityCheck={handleAvailabilityCheck} />
+                {isAvailable.available === null && (
+                    <p className="text-gray-500">Please check availability first.</p>
+                )}
+
+                {isAvailable.available === true && (
+                    <div className="btns flex gap-4">
+                        <button onClick={() => navigate('/contactus')} className="msgbtn bg-[#c59a63] text-white py-2 md:px-4 px-2 rounded-md shadow hover:bg-[#293941] transition">Send Message</button>
+                        <button onClick={() => navigate(`/event-booking-page/${eventId}`, { state: { eventData: { eventDetail } } })} className="bookbtn bg-[#293941] text-white py-2 md:px-4 px-2 rounded-md shadow hover:bg-[#c59a63] transition">Book Now</button>
+                    </div>
+                )}
+
+                {isAvailable.available === false && (
+                    <p className="text-red-500">The event is not available for the selected date and time.</p>
+                )}
             </div>
         </div>
     );

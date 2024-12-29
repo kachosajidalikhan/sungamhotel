@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MdMeetingRoom, MdRestaurant, MdTheaterComedy, MdPeopleAlt } from "react-icons/md";
 
-const Accordion = ({event}) => {
+const Accordion = ({eventDetail}) => {
     const [activeTab, setActiveTab] = useState(1);
 
     const toggleTab = (index) => {
@@ -23,7 +23,7 @@ const Accordion = ({event}) => {
                     <div className="px-2 py-2 space-y-2">
                         <div className="flex items-center gap-3">
                             <MdMeetingRoom className="hidden md:block text-blue-500 text-xl" />
-                            <p className="text-sm md:text-lg text-[#293941]"><span className="font-semibold">Basic Hall Price</span> - PKR {event.price}</p>
+                            <p className="text-sm md:text-lg text-[#293941]"><span className="font-semibold">Basic Hall Price</span> - PKR 25,000</p>
                         </div>
                         <div className="flex items-center gap-3">
                             <MdRestaurant className="hidden md:block text-red-500 text-xl" />

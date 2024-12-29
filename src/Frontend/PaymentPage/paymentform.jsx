@@ -11,20 +11,13 @@ function PaymentForm() {
 
   const accountDetails = {
     EasyPaisa: [
-      { label: "Account Title", value: "Ali Khan" },
-      { label: "Account Number", value: "1234567890" },
-      { label: "Branch Code", value: "091" },
-    ],
-    JazzCash: [
-      { label: "Account Title", value: "Sara Ahmed" },
-      { label: "Account Number", value: "0987654321" },
-      { label: "Branch Code", value: "021" },
+      { label: "Account Title", value: "Asghar Ali" },
+      { label: "Account Number", value: "03555037329" },
     ],
     Bank: [
-      { label: "Bank Name", value: "HBL" },
-      { label: "Account Title", value: "John Doe" },
-      { label: "Account Number", value: "5678901234" },
-      { label: "Branch Code", value: "123" },
+      { label: "Bank Name", value: "Al Baraka Bank" },
+      { label: "Account Title", value: "SunGum Marriage & Catering" },
+      { label: "Account Number", value: "0102659576010" },
     ],
   };
 
@@ -35,7 +28,7 @@ function PaymentForm() {
           Payment Method
         </label>
         <div className="space-y-2">
-          {["EasyPaisa", "JazzCash", "Bank"].map((method) => (
+          {["EasyPaisa", "Bank"].map((method) => (
             <div key={method}>
               <input
                 {...register("paymentMethod", { required: true })}

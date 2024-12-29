@@ -14,13 +14,20 @@ const EventPaymentPage = () => {
   const [File, setFile] = useState();
   const bookingData = location.state;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const payment_date = new Date().toISOString().split("T")[0];
   const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const handleClose = () => {
+    setIsModalOpen(false); // Modal ko close kare
+    nav("/"); // Homepage par navigate kare
+  };
+
 
 
 
   useEffect(() => {
     if (bookingData) {
-      const booked_date = new Date(bookingData.booked_date).toLocaleDateString();
+      const booked_date = new Date(bookingData.date).toLocaleDateString();
       setBookedDate(booked_date);
       const calculatedPayable = bookingData.totalPrice * 0.35;
       setPayableAmount(calculatedPayable.toFixed(0));
@@ -33,7 +40,7 @@ const EventPaymentPage = () => {
   const email = bookingData.email;
   const phone = bookingData.phone;
 
-  const eventType=  bookingData.eventType;
+  const eventType = bookingData.title;
   const booked_by = bookingData.booked_by;
   const totalPrice = bookingData.totalPrice;
   const booked_date = bookedDate;
@@ -45,37 +52,58 @@ const EventPaymentPage = () => {
   const paymentstatus = 'Half Pay';
 
   console.log("event booking detail", bookingData);
-  
+  let [receiptFile, setReceiptFile] = useState(null);
+
+  const handelReceiptChange = (e) => {
+    const file = e.target.files[0];
+    const validImageType = ['image/jpeg', 'image/png', 'image/gif'];
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file) {
+      if (!validImageType.includes(file.type)) {
+        alert("Invalid FIle Type");
+        return;
+      }
+      if (file.size > maxSize) {
+        alert('File size too large.')
+      }
+      setReceiptFile(file);
+    }
+  }
+
 
 
   const handlePaymentSuccess = async (paymentData) => {
-        const account_title = paymentData.accountHolderName;
-        const account_no = paymentData.accountNumber;
+    const account_title = paymentData.accountHolderName;
+    const account_no = paymentData.accountNumber;
     try {
-      const payload = new FormData();{
-        payload.append("eventType", eventType);
-        payload.append("cnic", cnic);
-        payload.append("phone", phone);
-        payload.append("email", email);
-        payload.append("paymentstatus", paymentstatus);
-        payload.append("payable_amount", payable_amount);
-        payload.append("custom_stage", custom_stage);
-        payload.append("no_of_guests", no_of_guests);
-        payload.append("menu", menu);
-        payload.append("time", time);
-        payload.append("booked_date", booked_date);
-        payload.append("totalPrice", totalPrice);
+      const payload = new FormData(); {
+        payload.append("event_name", eventType);
         payload.append("booked_by", booked_by);
         payload.append("account_title", account_title);
-        payload.append("account_no", account_no);
-      };
-      setIsModalOpen(true);
-      console.log("payment success event",payload);
+        payload.append("account_number", account_no);
+        payload.append("payment_date", payment_date);
+        payload.append("total_payment", totalPrice);
+        payload.append("paid_amount", payable_amount);
+        payload.append("payment_status", paymentstatus);
+        payload.append("email", email);
+        payload.append("phone", phone);
+        payload.append("cnic", cnic);
+        payload.append("booking_date", booked_date);
+        payload.append("booking_time", time);
+        payload.append("number_of_guests", no_of_guests);
+        payload.append("menu", menu);
+        payload.append("stage", custom_stage);
 
-      // const response = await axios.post("/api/saveBooking", payload);
-      // if (response.status === 200) {
-      //   nav("/bookingsuccess"); // Navigate to success page
-      // }
+        payload.append("receipt", receiptFile);
+      };
+      
+      console.log("payment success event", payload);
+
+      const response = await axios.post("/api/event-booking-requests", payload);
+      if (response.status) {
+        setIsModalOpen(true);
+      }
     } catch (error) {
       console.error("Error saving booking data:", error);
       alert("An error occurred while processing your booking.");
@@ -102,7 +130,7 @@ const EventPaymentPage = () => {
               <div>
                 <h6 className="text-sm md:text-lg font-medium">Event Name</h6>
               </div>
-              <span className="text-sm md:text-lg text-gray-600">{bookingData.eventType}</span>
+              <span className="text-sm md:text-lg text-gray-600">{bookingData.title}</span>
             </li>
             {/* Other details */}
             <li className="flex justify-between items-center bg-gray-100 p-1 rounded">
@@ -121,7 +149,7 @@ const EventPaymentPage = () => {
               <div>
                 <h6 className="text-sm md:text-lg font-medium">Booked Date</h6>
               </div>
-              <span className="text-sm md:text-lg text-gray-600">{bookedDate}</span>
+              <span className="text-sm md:text-lg text-gray-600">{bookedDate} {bookingData.time}</span>
             </li>
             <li className="flex justify-between items-center bg-[#c2c3c7] p-1 rounded text-[#293941]">
               <div>
@@ -183,12 +211,12 @@ const EventPaymentPage = () => {
             <div className="mb-2 mt-2">
               <label className="font-semibold text-[#293941]">Upload Transaction Slip</label>
               <input
-                {...register("transactionSlip", { required: true })}
+                {...register("receipt", { required: true })}
                 type="file"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={handelReceiptChange}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none"
               />
-              {errors.transactionSlip && <div className="text-red-600 mt-1">Please Upload Transaction Slip!</div>}
+              {errors.receipt && <div className="text-red-600 mt-1">Please Upload Transaction Slip!</div>}
             </div>
 
 
@@ -206,7 +234,7 @@ const EventPaymentPage = () => {
         <div className="p-2 fixed inset-0 flex items-center justify-center z-50">
           <div
             className="absolute inset-0 bg-black opacity-50"
-            onClick={() => setIsModalOpen(false)}
+            onClick={handleClose}
           ></div>
           <div className="relative bg-white w-full max-w-sm rounded shadow-lg p-6">
             <div className="text-[#293941] text-2xl font-bold text-center mb-2">Thank You!</div>
@@ -220,7 +248,7 @@ const EventPaymentPage = () => {
             </div>
             <div className="text-center mt-4">
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={handleClose}
                 className="px-4 py-2 text-[#293941] hover:text-[#c59a63] bg-[#c59a63] rounded hover:bg-[#293941] focus:outline-none"
               >
                 Close

@@ -8,13 +8,37 @@ import PaymentForm from "./paymentform";
 
 const PaymentPage = () => {
     let [BookingDetail, setBookingDetail] = useState([]);
-    let [File, setFile] = useState(null);
+    let [receiptFile, setReceiptFile] = useState(null);
+
+    const date = new Date().toISOString().split("T")[0];
     let nav = useNavigate();
 
+    
+
+
+    const handelReceiptChange = (e) => {
+        const file = e.target.files[0];
+        const validImageType = ['image/jpeg', 'image/png', 'image/gif'];
+        const maxSize = 5 * 1024 * 1024;
+
+        if (file){
+            if(!validImageType.includes(file.type)){
+                alert("Invalid FIle Type");
+                return;
+            }
+            if(file.size > maxSize){
+                alert('File size too large.')
+            }
+            setReceiptFile(file);
+        }
+    }
 
     const location = useLocation();
     const Data = location.state;
     const bookingData = Data.data
+    console.log(bookingData);
+
+
     //   let currentUser = useSelector((store) => store.userSection.currentUser);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,9 +47,10 @@ const PaymentPage = () => {
     //     setIsModalOpen(true);
     // };
 
+
     const [totalDays, setTotalDays] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
-    const [payableAmount, setPayableAmount] = useState(0);
+    const [paid_amount, setPayableAmount] = useState(0);
     useEffect(() => {
         if (bookingData) {
             // Calculate Number of Days
@@ -36,7 +61,7 @@ const PaymentPage = () => {
             setTotalDays(days);
 
             // Calculate Total Amount
-            const totalAmount = days * bookingData.roomPrice;
+            const totalAmount = days * bookingData.price;
             setTotalAmount(totalAmount);
 
             // Calculate Payable Amount
@@ -62,60 +87,61 @@ const PaymentPage = () => {
         );
     }
 
-     
+
 
     // const bookingsData = ""
-        const    booked_by = bookingData.booked_by;
-        const    email = bookingData.email;
-        const    phone = bookingData.phone;
-        const    country = bookingData.country;
-        const    room_name = bookingData.room_name;
-        const    roomPrice = bookingData.roomPrice;
-        const    checkin_date = bookingData.checkin_date;
-        const    checkout_date = bookingData.checkout_date;
-        const    room_number = bookingData.room_number;
+    const booked_by = bookingData.booked_by;
+    const email = bookingData.email;
+    const phone = bookingData.phone;
+    const cnic = bookingData.cnic;
+    const checkin_date = bookingData.checkin_date;
+    const checkout_date = bookingData.checkout_date;
+    const room_number = bookingData.room_number;
 
     const handlePaymentClick = async (paymentData) => {
         const account_title = paymentData.accountHolderName;
-        const account_no = paymentData.accountNumber;
-      
-        const paymentStatus = "Half Pay";  
+        const account_number = paymentData.accountNumber;
+
+        const payment_status = "Half Paid";
         // Prepare the data
         const bookingPayload = new FormData(); {
             bookingPayload.append("booked_by", booked_by);
             bookingPayload.append("email", email);
             bookingPayload.append("phone", phone);
-            bookingPayload.append("country", country);
-            bookingPayload.append("room_name", room_name);
-            bookingPayload.append("roomPrice", roomPrice);
-            bookingPayload.append("checkin_date", checkin_date );
+            bookingPayload.append("cnic", cnic);
+            bookingPayload.append("payment_date", date);
+            bookingPayload.append("checkin_date", checkin_date);
             bookingPayload.append("checkout_date", checkout_date);
-            bookingPayload.append("totalDays", totalDays);
-            bookingPayload.append('booked_by', paymentData.booked_by);
-            bookingPayload.append("paymentStatus", paymentStatus);
+            bookingPayload.append("payment_status", payment_status);
             bookingPayload.append("account_title", account_title);
-            bookingPayload.append("account_no", account_no);
-            bookingPayload.append("transactionSlip", File);
-            bookingPayload.append("payableAmount", payableAmount);
-            bookingPayload.append("totalAmount", totalAmount);
+            bookingPayload.append("account_number", account_number);
+            bookingPayload.append("receipt", receiptFile);
+            bookingPayload.append("paid_amount", paid_amount);
+            bookingPayload.append("total_payment", totalAmount);
             bookingPayload.append("room_number", room_number);
         };
-        
-        console.log("slip po in",bookingPayload.FormData);
 
-        
+        console.log("payment detail po", bookingPayload);
+
+
 
         try {
             // Send data to the backend
-            // const response = await axios.post("/api/bookings", bookingPayload);
+            const response = await axios.post("/api/room-booking-requests", bookingPayload);
             console.log("Booking saved successfully:", bookingPayload);
 
             // Open modal to show success message
             setIsModalOpen(true);
         } catch (error) {
-            // console.error("Error saving booking:", error.response?.data || error.message);
+            console.error("Error saving booking:", error.response?.data || error.message);
         }
     };
+
+
+    const handleClose = () => {
+        setIsModalOpen(false); // Modal ko close kare
+        nav("/"); // Homepage par navigate kare
+      };
 
     return (
         <div className=" mb-4">
@@ -142,11 +168,11 @@ const PaymentPage = () => {
                         <ul className="divide-y divide-gray-200">
                             <li className="py-2 flex justify-between">
                                 <span className="text-sm md:text-lg font-medium">Room Name</span>
-                                <span className="text-sm md:text-lg">{bookingData.room_name}</span>
+                                <span className="text-sm md:text-lg">{bookingData.title}</span>
                             </li>
                             <li className="py-2 flex justify-between">
                                 <span className="text-sm md:text-lg font-medium">Room Price</span>
-                                <span className=" text-sm md:text-lg">Rs.{bookingData.roomPrice}/Night</span>
+                                <span className=" text-sm md:text-lg">Rs.{bookingData.price}/Night</span>
                             </li>
                             <li className="py-2 flex justify-between">
                                 <span className="text-sm md:text-lg font-medium">Check In</span>
@@ -166,7 +192,7 @@ const PaymentPage = () => {
                             </li>
                             <li className="py-2 px-2 text-[#293941] bg-[#c2c3c7] flex justify-between">
                                 <span className="text-sm md:text-lg font-medium">Payable Amount (PKR)</span>
-                                <span className="text-sm md:text-lg font-semibold">{payableAmount}</span>
+                                <span className="text-sm md:text-lg font-semibold">{paid_amount}</span>
                             </li>
                         </ul>
                     </div>
@@ -264,16 +290,15 @@ const PaymentPage = () => {
                             <div className="mb-2 mt-2">
                                 <label className="font-semibold text-[#293941]">Upload Transaction Slip</label>
                                 <input
-                                    {...register("transactionSlip", { required: true })}
+                                    {...register("receipt", { required: true })}
                                     type="file"
-                                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                    onChange={handelReceiptChange}
                                     className="w-full px-3 py-2 border rounded-lg focus:outline-none"
                                 />
-                                {errors.transactionSlip && <div className="text-red-600 mt-1">Please Upload Transaction Slip!</div>}
+                                {errors.receipt && <div className="text-red-600 mt-1">Please Upload Transaction Slip!</div>}
                             </div>
                             <button
                                 type="submit"
-                                onClick={handlePaymentClick}
                                 className="w-full font-semibold py-2 bg-[#c59a63] text-white rounded-lg hover:bg-[#293941] focus:outline-none focus:ring focus:ring-blue-300"
                             >
                                 Payment Now
@@ -290,7 +315,7 @@ const PaymentPage = () => {
                 <div className="fixed p-6 inset-0 flex items-center justify-center z-50">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
-                        onClick={() => setIsModalOpen(false)}
+                        onClick={handleClose}
                     ></div>
                     <div className="relative bg-white w-full max-w-sm rounded shadow-lg p-6">
                         <div className="text-2xl font-bold text-[#293941] text-center mb-2">Thank You!</div>
@@ -304,7 +329,7 @@ const PaymentPage = () => {
                         </div>
                         <div className="text-center mt-4">
                             <button
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={handleClose}
                                 className="px-4 py-2 bg-[#c59a63] text-[#293941] hover:text-[#c59a63] rounded hover:bg-[#293941] focus:outline-none"
                             >
                                 Close

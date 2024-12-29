@@ -140,10 +140,10 @@ export default ()=>{
           <li>
             <span className="icon-phone mr-2 text-blue-400"></span>
             <a
-              href="tel:058453131"
+              href="tel:05815453131"
               className="text-gray-300 hover:text-white transition duration-300 text-sm"
             >
-              058453131
+              05815453131
             </a>
           </li>
           <li>

@@ -1,14 +1,28 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-const RoomCard = ({ imageUrl, title, price, detailsLink,roomId,roomNo }) => {
+const RoomCard = ({ imageUrl, capacity, description, images, title, price,roomId,roomNo }) => {
   const nav = useNavigate();
+  const roomDetails = {
+  imageUrl: imageUrl,
+  capacity: capacity,
+  description: description,
+  images: images,
+  title: title,
+  price: price,
+  roomId:  roomId,
+  roomNo: roomNo
+  }
+  console.log(roomDetails);
+  
+
   return (
     <div className="room-wrap flex flex-col lg:flex-row">
       <a
         href="#"
         className="img w-full lg:w-1/2 bg-cove bg-center"
-        style={{ backgroundImage: `url(${imageUrl})` }}
+        style={{ backgroundImage: `url(/${imageUrl.replace(/\\/g,"/")})` }}
       ></a>
       <div className="half left-arrow flex items-center p-4 text-center">
         <div className="text">
@@ -25,7 +39,7 @@ const RoomCard = ({ imageUrl, title, price, detailsLink,roomId,roomNo }) => {
           <p className="pt-1">
             <a
               className=" btn-custom px-3 cursor-pointer py-2 bg-[#c59a63] text-gray rounded transition"
-              onClick={() => { nav(`/roomdetail/${roomNo}`) }}
+              onClick={() => { nav(`/roomdetail/${roomId}`,{ state: { roomDetails } }) }}
             >
               View Details <span className="ml-2 ">&rarr;</span>
             </a>
@@ -37,65 +51,19 @@ const RoomCard = ({ imageUrl, title, price, detailsLink,roomId,roomNo }) => {
 };
 
 const RoomsSection = () => {
-  const rooms = [
-    {
-      roomId: 1,
-      roomNo: 101,
-      imageUrl: "images/room-6.jpg",
-      title: "King Room",
-      price: 10000,
-      roomStatus: 'Available',
-      description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    },
-    {
-      roomId: 2,
-      roomNo: 102,
-      imageUrl: "images/room-1.jpg",
-      title: "Suite Room",
-      price: 5000,
-      roomStatus: 'Available',
-      description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    },
-    {
-      roomId: 3,
-      roomNo: 103,
-      imageUrl: "images/room-2.jpg",
-      title: "Family Room",
-      price: 12000,
-      roomStatus: 'Booked',
-      description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
 
-    },
-    {
-      roomId: 4,
-      roomNo: 104,
-      imageUrl: "images/room-3.jpg",
-      title: "Deluxe Room",
-      price: 8000,
-      roomStatus: 'Available',
-      description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+const [rooms, setRooms] = useState([])
 
-    },
-    {
-      roomId: 5,
-      roomNo: 105,
-      imageUrl: "images/room-4.jpg",
-      title: "Luxury Room",
-      price: 10000,
-      roomStatus: 'Available',
-      description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
+  const fetchRooms = async ()=>{
+    const responce = await axios.get('/api/rooms')
+    setRooms(responce.data);
+  }
 
-    },
-    {
-      roomId: 6,
-      roomNo: 106,
-      imageUrl: "images/room-5.jpg",
-      title: "Superior Room",
-      price: 6000,
-      roomStatus: 'Booked',
-      description: 'Experience luxury and comfort in our Deluxe Ocean View Suite.This spacious room offers breathtaking views of the ocean, modern amenities, and a private balcony for your relaxation.',
-    },
-  ];
+  
+
+useEffect(()=>{
+fetchRooms();
+},[])
 
   return (
     <section>
@@ -114,16 +82,34 @@ const RoomsSection = () => {
 
         {/* Room Cards */}
         <div className="grid lg:grid-cols-2">
-          {rooms.map((room) => (
+          {rooms.map((room) => 
+            {
+              // const renderRoomImage = (room) =>{
+              //   try{
+                  const imageArray = JSON.parse(room.images);
+                  const firstImage = imageArray.length  > 0 ? imageArray[0]: ""
+
+                  console.log(firstImage);
+                  // return firstImage
+              //   }catch (error){
+              //     console.error("Error", error)
+              //   }
+              // }
+              
+              return(
+
             <RoomCard
-              key={room.roomId}
-              imageUrl={room.imageUrl}
-              title={room.title}
+              key={room.id}
+              imageUrl={firstImage}
+              images={imageArray}
+              description={room.description}
+              capacity={room.capacity}
+              title={room.name}
               price={room.price}
-              detailsLink={`/roomdetail/${room.roomNo}`} // Generate details link
-              roomNo={room.roomNo}
-            />
-          ))}
+              roomNo={room.number}
+              roomId={room.id}
+            />)
+          })}
         </div>
       </div>
       <br />

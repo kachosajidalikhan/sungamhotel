@@ -35,8 +35,8 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/menu' element={<RestaurantMenu />} />
           <Route path='/rooms' element={<RoomsSection />} />
-          <Route path='/roomdetail/:roomNo' element={<RoomDetail />} />
-          <Route path='/room-booking-page/:roomNo' element={<RoomBookingPage />} />
+          <Route path='/roomdetail/:roomId' element={<RoomDetail />} />
+          <Route path='/room-booking-page/:roomId' element={<RoomBookingPage />} />
           <Route path='/room-payment-page' element={<RoomPaymentPage />} />
           <Route path='/services' element={<Services />} />
           <Route path='/aboutus' element={<Aboutsection />} />
@@ -45,7 +45,7 @@ function App() {
           <Route path='/events' element={<EventsSection />} />
           <Route path='/eventsdetail/:eventId' element={<EventsDetail />} />
           <Route path='/adminpanel/*' element={<AdminPanel />} />
-          <Route path='/event-booking-page' element={<EventBookingPage />} />
+          <Route path='/event-booking-page/:eventId' element={<EventBookingPage />} />
           <Route path='/event-payment-page' element={<EventPaymentPage />} />
           <Route path='/admin-login' element={<Login />} />
 

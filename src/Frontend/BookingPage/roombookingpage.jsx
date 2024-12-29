@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 // import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import { useSelector } from "react-redux";
 
 const RoomBookingPage = () => {
@@ -13,6 +13,12 @@ const RoomBookingPage = () => {
 
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
+
+  const location = useLocation();
+  const Data = location.state;
+  const roomDetails = Data.roomDetails
+  console.log("roombooking mai aya",roomDetails);
+  
 
   // Fetch all countries on component mount
   useEffect(() => {
@@ -39,73 +45,19 @@ const RoomBookingPage = () => {
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
   };
-  //   const params = useParams();
-  //   let currentUser = useSelector((store) => store.userSection.currentUser);
-  //   console.log(currentUser);
-
-  //   useEffect(() => {
-  //     const fetchRoom = async () => {
-  //       try {
-  //         const resp = await axios.get("/get-rooms");
-  //         const room = resp.data.find((room) => room._id === params.roomid);
-  //         setRoom(room);
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     };
-
-  //     fetchRoom();
-  //   }, [params.roomid]);
-
-  //   if (!room) {
-  //     return <div>Loading...</div>;
-  //   }
-
-  const room_name = 'Family Suit';
-  const roomPrice = 4000;
-
-  // const userData =''
 
   const userData = (data) => {
-    // Data ko Payment Page par bhejna
-
-    console.log(data);
-    data.room_name = room_name;
-    data.roomPrice = roomPrice;
+     data.price = roomDetails.price
+     data.capacity = roomDetails.capacity
+     data.description = roomDetails.description
+     data.roomId = roomDetails.roomId
+    //  data.roomNo = roomDetails.room_number
+     data.title = roomDetails.title
+     data.checkin_date = roomDetails.checkIn
+     data.checkout_date = roomDetails.checkOut
 
     nav("/room-payment-page", { state: { data } });
   };
-
-  //   const userData = async (data) => {
-  //     data.roomName = roomName;
-  //     data.roomPrice = roomPrice;
-  //     data.userId = userId;
-  //     console.log("Data sent to the backend:", data);
-
-  //     try {
-  //       const response = await axios.post("/booking-detail", {
-  //         ...data,
-  //         checkIn: new Date(data.checkIn),
-  //         checkOut: new Date(data.checkOut),
-  //       });
-
-  //       if (response.status === 200) {
-  //         const bookingDetail = response.data.bookingDetail;
-  //         if (bookingDetail && bookingDetail._id) {
-  //           const bookingId = bookingDetail._id;
-  //           console.log("Booking ID:", bookingId);
-  //           nav(`/bookingdetail/${bookingId}`);
-  //         } else {
-  //           console.error("Booking detail does not contain an ID");
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error(
-  //         "Error booking room:",
-  //         error.response ? error.response.data : error.message
-  //       );
-  //     }
-  //   };
 
   return (
     <>
@@ -181,21 +133,21 @@ const RoomBookingPage = () => {
                   <div className="w-full">
                     <label className="block text-sm mb-1">Check In</label>
                     <input
-                      {...register("checkin_date", { required: true })}
                       type="date"
+                      value={roomDetails.checkIn}
                       className="w-full p-2 focus:outline-none rounded"
+                      readOnly
                     />
-                    {errors.checkin_date && <p className="text-red-500 text-sm">Please Enter Check-In Date!</p>}
                   </div>
                   <div className="w-full">
                     <label className="block text-sm mb-1">Check Out</label>
                     <input
-                      {...register("checkout_date", { required: true })}
                       type="date"
+                      value={roomDetails.checkOut}
                       className="w-full p-2 focus:outline-none rounded"
+                      readOnly
                     />
-                    {errors.checkout_date && <p className="text-red-500 text-sm">Please Enter Check-Out Date!</p>}
-                  </div>
+                    </div>
 
                   <div className="w-full">
                     <label className="block text-sm mb-1">Your Country</label>
@@ -240,7 +192,7 @@ const RoomBookingPage = () => {
                     <label className="block text-sm mb-1">Room No</label>
                     <input
                       {...register("room_number", { required: true })}
-                      value={roomNo}
+                      value={roomDetails.roomNo}
                       type="number"
                       className="w-full p-2 focus:outline-none rounded"
                     />

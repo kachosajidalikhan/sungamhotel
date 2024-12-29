@@ -3,21 +3,29 @@ import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 const EventBookingPage = () => {
     const { register, handleSubmit, control, watch, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
 
+    const location = useLocation();
+    const { eventData } = location.state;
+    const eventDetail = eventData.eventDetail;
+
+    console.log("event detail po", eventDetail);
+
+
     const eventPrices = {
-        Wedding: 50000,
-        Birthday: 50000,
-        Meeting: 50000,
-        Other: 50000,
+        Wedding: 25000,
+        Birthday: 25000,
+        Meeting: 25000,
+        Other: 25000,
     };
 
-    const watchEventType = watch('eventType', 'Wedding'); // Default value is 'Wedding'
+    const watchEventType = watch('eventType', "Wedding"); // Default value is 'Wedding'
     const watchStageChecked = watch('custom_stage'); // Default value is false
-    const watchGuestCount = watch('guestCount', 10); // Default value is 10
+    const watchservices = watch('services'); // Default value is 10
 
     const total_payment = () => {
         let total = eventPrices[watchEventType]; // Event type price
@@ -25,6 +33,9 @@ const EventBookingPage = () => {
         // Subtract 20,000 if custom stage is checked
         if (watchStageChecked) {
             total += 20000; // Custom stage discount
+        }
+        if (watchservices) {
+            total += 25000; // Custom stage discount
         }
 
         return total;
@@ -43,7 +54,7 @@ const EventBookingPage = () => {
     return (
         <div className="flex w-full pt-6 bg-[#c2c3c7]">
             <div className="w-[40%] hidden lg:block">
-                <img src="images/image_6.jpg" alt="" />
+                <img src="/images/image_6.jpg" alt="" />
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
@@ -108,56 +119,42 @@ const EventBookingPage = () => {
                 <div className='flex w-full gap-3'>
                     <div className="mb-4 w-full">
                         <label className="block text-sm md:text-lg text-[#293941] font-semibold mb-2">Event Type</label>
-                        <select
-                            className="w-full p-2 border rounded"
-                            {...register('eventType')}
-                        >
-                            <option value="Wedding">Wedding</option>
-                            <option value="Birthday">Birthday</option>
-                            <option value="Meeting">Meeting</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        <input
+                            type="text"
+                            className={`w-full p-2 border rounded ${errors.cnic ? 'border-red-500' : ''}`}
+                            value={eventDetail.title}
+                            readOnly
+                            {...register('title', { required: 'title is required' })}
+                        />
                     </div>
 
                     {/* Booking Date */}
                     <div className="mb-4 w-full">
-                        <label className="block text-sm md:text-lg text-[#293941] font-semibold mb-2">Select Date</label>
-                        <Controller
-                            control={control}
-                            name="booked_date"
-                            rules={{ required: 'Booking date is required' }}
-                            render={({ field }) => (
-                                <DatePicker
-                                    selected={field.value}
-                                    onChange={(date) => field.onChange(date)}
-                                    className="w-full p-2 border rounded"
-                                    placeholderText="Select a date"
-                                />
-                            )}
+                        <label className="block text-sm md:text-lg text-[#293941] font-semibold mb-2">Selected Date</label>
+
+                        <input
+                            type="date"
+                            className={`w-full p-2 border rounded ${errors.cnic ? 'border-red-500' : ''}`}
+                            value={eventDetail.date}
+                            readOnly
+                            {...register('date', { required: 'date is required' })}
                         />
-                        {errors.booked_date && (
-                            <span className="text-red-500 text-sm">{errors.booked_date.message}</span>
-                        )}
+
                     </div>
 
                     {/* Time Slot */}
                     <div className="w-full">
                         <label className="block text-sm text-[#293941] md:text-lg font-semibold">Time Slot</label>
                         <div className="md:flex md:gap-4 items-center">
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="Morning"
-                                    {...register('time', { required: 'Time slot is required' })}
-                                /> Morning
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="Evening"
-                                    {...register('time', { required: 'Time slot is required' })}
-                                /> Evening
-                            </label>
+
+                            <input
+                                type="text"
+                                className={`w-full p-2 border rounded ${errors.cnic ? 'border-red-500' : ''}`}
+                                value={eventDetail.time}
+                                readOnly
+                            {...register('time', { required: 'time is required' })}
+
+                            />
                         </div>
                         {errors.time && (
                             <span className="text-red-500 text-sm">{errors.time.message}</span>
@@ -216,6 +213,17 @@ const EventBookingPage = () => {
                                 className='mr-2'
                             />
                             Event Menu <span className='text-sm ml-2'>(Extra Charges Applied)</span>
+                        </label>
+                    </div>
+
+                    <div className="mb-4 w-full">
+                        <label className="text-[#293941] flex items-center">
+                            <input
+                                type="checkbox"
+                                {...register('services')}
+                                className='mr-2'
+                            />
+                            Services <span className='text-sm ml-2'>(Extra Charges Rs.25,000)</span>
                         </label>
                     </div>
                 </div>

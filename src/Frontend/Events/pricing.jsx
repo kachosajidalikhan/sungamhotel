@@ -3,7 +3,7 @@ import { IoCallOutline } from "react-icons/io5";
 import Accordion from "./accordion";
 import MenuPricing from "./menupricing";
 
-const Pricing = ({event}) => {
+const Pricing = ({eventDetail}) => {
     const handleWhatsAppRedirect = () => {
         const phoneNumber = "923485375193"; // Replace with the hotel's WhatsApp number
         const message = "Hi, I would like to know more about your hotel. How can you assist me?";
@@ -18,7 +18,7 @@ const Pricing = ({event}) => {
                 {/* Accordion Section */}
                 <div className="bg-white rounded-lg w-full md:w-1/2">
                     <h3 className="venu text-[#293941] text-xl font-bold mb-4 pl-2">Venue Pricing</h3>
-                    <Accordion event={event}/>
+                    <Accordion event={eventDetail}/>
                 </div>
 
                 {/* Header Menu Section */}

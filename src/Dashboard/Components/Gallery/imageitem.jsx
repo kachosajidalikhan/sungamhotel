@@ -1,6 +1,29 @@
 import React from "react";
 
-function ImageItem({ image }) {
+function ImageItem({ image, onDelete }) {
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this image?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/gallery/${image.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete the image.");
+      }
+
+      alert("Image deleted successfully!");
+      onDelete(image.id); // Notify the parent component to update the state
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      alert("Failed to delete the image. Please try again.");
+    }
+  };
+
   return (
     <div className="rounded-lg bg-white overflow-hidden shadow">
       <div className="h-40">
@@ -19,19 +42,14 @@ function ImageItem({ image }) {
             {tag}
           </span>
           <div className=" flex gap-1 ">
-          <button
-            className="text-xs bg-[#293941] text-[#c59a63] border rounded shadow-md block focus:outline-none text-left px-2 py-1 hover:bg-[#c59a63] hover:text-[#293941]"
-            // onClick={handleDelete}
-          >
-            Delete
-          </button>
-          {/* <button
-            className="text-xs text-white bg-gray-400 border rounded shadow-md block focus:outline-none text-left px-3 py-1 hover:bg-gray-100"
-            // onClick={() => handleEdit()}
-          >
-            Edit
-          </button> */}
-        </div>
+            <button
+              className="text-xs bg-[#293941] text-[#c59a63] border rounded shadow-md block focus:outline-none text-left px-2 py-1 hover:bg-[#c59a63] hover:text-[#293941]"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+
+          </div>
         </>))}
       </div>
     </div>
